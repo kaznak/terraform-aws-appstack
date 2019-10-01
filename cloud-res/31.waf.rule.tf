@@ -1,12 +1,13 @@
 # -*- Mode: HCL; -*-
 
-resource "aws_waf_rule" "main" {
+## Global ##################################################################
+resource "aws_waf_rule" "prod" {
   depends_on = [
     aws_waf_ipset.fullaccess_blocks,
     aws_waf_byte_match_set.wp_sensitive,
   ]
   name        = local.default_name
-  metric_name = replace(local.default_name, "-", "")
+  metric_name = replace("${local.default_name}Prod", "-", "")
 
   predicates {
     data_id = aws_waf_ipset.fullaccess_blocks.id
@@ -21,6 +22,22 @@ resource "aws_waf_rule" "main" {
   }
 }
 
+resource "aws_waf_rule" "stg" {
+  depends_on = [
+    aws_waf_ipset.fullaccess_blocks,
+    aws_waf_byte_match_set.wp_sensitive,
+  ]
+  name        = local.default_name
+  metric_name = replace("${local.default_name}Stg", "-", "")
+
+  predicates {
+    data_id = aws_waf_ipset.fullaccess_blocks.id
+    negated = true
+    type    = "IPMatch"
+  }
+}
+
+## Regional : ap-northeast-1  ##############################################
 resource "aws_wafregional_rule" "main" {
   depends_on = [
     aws_wafregional_ipset.fullaccess_blocks,
