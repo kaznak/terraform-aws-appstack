@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -Cu
+set -Ee
+set -o pipefail
+shopt -s nullglob
+
+based=$(readlink -f $(dirname $0)/..)
+pname=$(basename $0)
+stime=$(date +%Y%m%d%H%M%S%Z)
+
+exec 3>&2
+# logd=$based/log
+# exec 3>&2 2>$logd/$pname.$stime.$$.log
+# set -vx
+
+MSG() {
+    echo "$pname pid:$$ stime:$stime etime:$(date +%Y%m%d%H%M%S%Z) $@"	>&3
+}
+
+tmpd=$(mktemp -d -t "$pname.$stime.$$.XXXXXXXX")/
+if [ 0 -ne "$?" ] ; then
+    MSG FATAL can not make temporally directory.
+    exit 1
+fi
+
+trap 'BEFORE_EXIT' EXIT
+BEFORE_EXIT()	{
+    rm -rf $tmpd
+}
+
+trap 'ERROR_HANDLER' ERR
+export EMSG
+ERROR_HANDLER()	{
+    [ "$EMSG" ] && MSG $EMSG
+    touch $tmpd/ERROR	# for child process error detection
+    exit 1		# root process trigger BEFORE_EXIT function
+}
+
+################################################################
+args=$*
+
+################################################################
+EMSG="line:$LINENO ERROR while preparing to fetch credential"
+if [ -s $based/aws-profiles.lst ] ; then
+    grep -Ev '^[[:space:]]*(#|$)' $based/aws-profiles.lst
+else
+    MSG "line:$LINENO INFO use \"default\" profile."
+    cat	<<EOF
+default
+EOF
+fi	|
+    while read credential rest ; do
+	cat	<<EOF
+EMSG="line:$LINENO INFO while fetching credential for profile $credential"
+aws-mfa --profile $credential $args
+EOF
+    done	> $tmpd/aws-mfa.sh
+
+EMSG="line:$LINENO INFO while fetching credential"
+. $tmpd/aws-mfa.sh
+
+################################################################
+EMSG="line:$LINENO FATAL while exiting"
+shopt -u nullglob
+exit 0
