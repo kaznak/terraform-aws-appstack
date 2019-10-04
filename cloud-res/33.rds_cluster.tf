@@ -2,7 +2,7 @@
 
 resource "aws_rds_cluster" "main" {
   cluster_identifier  = local.rds.name
-  skip_final_snapshot = ! local.ephemeral
+  skip_final_snapshot = local.ephemeral
   availability_zones  = local.az_names
 
   db_subnet_group_name   = aws_db_subnet_group.main.id
