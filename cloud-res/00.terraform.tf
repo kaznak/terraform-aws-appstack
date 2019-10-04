@@ -1,6 +1,13 @@
 # -*- Mode: HCL; -*-
 
 terraform {
+  required_version = "~> 0.12.0"
+  required_providers {
+    tls    = "~> 2.0"
+    local  = "~> 1.2"
+    aws    = "~> 2.12"
+    random = "~> 2.1"
+  }
   backend "s3" {
     bucket  = "tfstate"
     key     = "appstack.tfstate"
@@ -11,26 +18,22 @@ terraform {
 
 ############################################################################
 provider "aws" {
-  version = "~> 2.22"
   profile = "deploy"
   region  = "ap-northeast-1"
 }
 
 provider "aws" {
   alias   = "us-east-1"
-  version = "~> 2.22"
   profile = "deploy"
   region  = "us-east-1"
 }
 
 provider "aws" {
   alias   = "control"
-  version = "~> 2.22"
   profile = "domain"
   region  = "ap-northeast-1"
 }
 
 provider "random" {
-  version = "~> 2.1"
   alias   = "r"
 }
