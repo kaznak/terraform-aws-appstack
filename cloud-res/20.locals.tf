@@ -38,8 +38,8 @@ locals {
     instance_type    = "t3.nano"
     user_data        = "32.user-data.maintenance.full.sh"
     key_name         = aws_key_pair.main.key_name
-    ami              = concat(data.aws_ami_ids.ubuntu.ids,
-      data.aws_ami_ids.maintenance.ids)[0]
+    ami              = concat(data.aws_ami_ids.maintenance.ids,
+      data.aws_ami_ids.ubuntu.ids)[0]
     root_volume_size = 30
     max_count        = 1
     min_count        = 1
@@ -55,8 +55,8 @@ locals {
     instance_type    = "t3.small"
     user_data        = "32.user-data.service.full.sh"
     key_name         = aws_key_pair.main.key_name
-    ami              = concat(data.aws_ami_ids.ubuntu.ids,
-      data.aws_ami_ids.service.ids)[0]
+    ami              = concat(data.aws_ami_ids.service.ids,
+      data.aws_ami_ids.ubuntu.ids)[0]
     root_volume_size = 30
     max_count        = 10
     min_count        = 2
