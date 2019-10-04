@@ -4,7 +4,14 @@
 An AWS cloud environment for web applications.
 This code is an example to deploy WordPress sites.
 
+# Architecture
+
 ![Architecture Overview](./docs/imgs/architecture.png)
+
+Some of legacy or wild web applications is not thread-safe, and then they are not suitable for a scale-out environment.
+The unsafety mainly comes from their local file handling.
+Placing those code into an EFS and share the file system ease this trouble.
+However, problems may still occur depending on the style of file locking.
 
 # Directory tree
 
