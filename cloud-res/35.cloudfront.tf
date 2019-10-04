@@ -6,7 +6,7 @@ resource "aws_cloudfront_distribution" "www" {
   enabled = true
   aliases = [values(local.endpoints_www)[count.index]]
 
-  web_acl_id = aws_waf_web_acl.main.id
+  web_acl_id = keys(local.endpoints_www)[count.index] == "prod" ? aws_waf_web_acl.www_prod.id : aws_waf_web_acl.www_stg.id
 
   viewer_certificate {
     # cloudfront_default_certificate = true
