@@ -64,6 +64,10 @@ endpoint=fs-c0000000.efs.ap-northeast-1.amazonaws.com
 ~~~
 pushd cloud-res
 mv 33.ec2.maintenance-ami.tf{.off,}
+terraform apply  -target=aws_instance.maintenance-ami
+# type yes to deploy
+# and wait decent time for deploying and installing finish
+# check /var/log/user-data.log
 terraform apply -target=aws_ami_from_instance.maintenance-ami
 # type yes to deploy
 terraform state rm aws_ami_from_instance.maintenance-ami
@@ -78,6 +82,10 @@ popd
 ~~~
 pushd cloud-res
 mv 33.ec2.service-ami.tf{.off,}
+terraform apply  -target=aws_instance.service-ami
+# type yes to deploy
+# and wait decent time for deploying and installing finish
+# check /var/log/user-data.log
 terraform apply -target=aws_ami_from_instance.service-ami
 # type yes to deploy
 terraform state rm aws_ami_from_instance.service-ami
