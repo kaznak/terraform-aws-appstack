@@ -2,7 +2,7 @@
 # WebApp Environment
 
 An AWS cloud environment for web applications.
-This code is an example to deploy wordpress sites.
+This code is an example to deploy WordPress sites.
 
 ![Architecture Overview](./docs/imgs/architecture.png)
 
@@ -21,11 +21,11 @@ This code is an example to deploy wordpress sites.
 
 # Configuration
 
-Add the names of profiles used in the environment into following file:
+Add the names of profiles used in the environment into the following file:
 
 + ./aws-profiles.lst
 
-Edit following two files mainly:
+Edit the following two files mainly:
 
 + 00.terraform.tf
 + 20.locals.tf
@@ -46,14 +46,14 @@ popd
 terraform state show aws_efs_file_system.main
 ~~~
 
-Note down the value of dns_name.
+Note down the value of ``dns_name''.
 
-Edit following two files:
+Edit the following two files:
 
 + 32.user-data.maintenance.full.sh
 + 32.user-data.service.full.sh
 
-Substitute the dns_name value to the endpoint variable of the above files:
+Substitute the ``dns_name'' value to the endpoint variable of the above files:
 
 ~~~
 # !TODO! EFS endpoint must be placed.
