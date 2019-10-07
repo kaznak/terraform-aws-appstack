@@ -1,6 +1,16 @@
 # -*- Mode: HCL; -*-
 
 resource "aws_instance" "maintenance-ami" {
+  depends_on = [
+    aws_route.main,
+    aws_main_route_table_association.main,
+    aws_network_acl_rule.private-i_x_all,
+    aws_network_acl_rule.private-e_x_all,
+    aws_network_acl_rule.private-i_g_tcpephemeral,
+    aws_network_acl_rule.private-i_g_udpephemeral,
+    aws_network_acl_rule.private-e_g_all,
+  ]
+
   instance_type        = local.instances_maintenance.instance_type
   iam_instance_profile = aws_iam_instance_profile.ec2.name
   user_data            = file(local.instances_maintenance.user_data)
