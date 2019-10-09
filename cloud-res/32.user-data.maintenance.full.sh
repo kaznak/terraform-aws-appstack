@@ -41,10 +41,10 @@ AUTOUPDATE=false
 ############################################################################
 # Install Packages
 
-apt-get -y update
+apt -y update
 # Satisfying even ubuntu older versions.
-apt-get -y install jq awscli ruby2.0 ||
-    apt-get -y install jq awscli ruby
+apt -y install jq awscli ruby2.0 ||
+    apt -y install jq awscli ruby
 
 ################################################################
 # Information Gathering
@@ -131,24 +131,19 @@ tee -a /home/ubuntu/.ssh/authorized_keys	<<EOF	>&3
 ecdsa-sha2-nistp521 AAAAPUBLICKKEY== 
 EOF
 
-################################################################
-apt-get -y install	\
-	mysql-client-core-5.7	\
-	nfs-common
-
-# !TODO! EFS endpoint must be placed.
-endpoint=fs-c0000000.efs.ap-northeast-1.amazonaws.com
-
 id -G ubuntu	|
     tr ' \t' '\n'	|
     awk 'NR>1'	|
     sort -mnu <(id -g www-data) -	> $tmpd/ubuntu.sgid.lst
 usermod -G $(tr '\n' ',' < $tmpd/ubuntu.sgid.lst|sed 's/,$//') ubuntu
 
-# [ -d /var/www.orig ] || mv /var/www{,.orig}
-# [ -d /var/nginx.orig ] || mv /etc/nginx{,.orig}
-# mkdir -p /var/www /etc/nginx
-# chown www-data:www-data /var/www
+################################################################
+apt -y	install	\
+	mysql-client-core-5.7	\
+	nfs-common
+
+# !TODO! EFS endpoint must be placed.
+endpoint=fs-c0000000.efs.ap-northeast-1.amazonaws.com
 
 cat	<<EOF	>> /etc/fstab
 # server		local_path	fstype	opetions										 dump_flg fsck_flg
@@ -158,9 +153,28 @@ $endpoint:/		/mnt		nfs	defaults,_netdev,nfsvers=4.1,rsize=1048576,wsize=1048576,
 EOF
 
 mount /mnt
-mkdir -p /mnt/{www,etc.nginx}
 
-mount -a
+# [ -d /var/www.orig ] || mv /var/www{,.orig}
+# mkdir -p /mnt/www /var/www
+# chown www-data:www-data  /mnt/www /var/www
+
+# [ -d /var/nginx.orig ] || mv /etc/nginx{,.orig}
+# if [ -d /mnt/etc.nginx ] ; then
+#     cp -rp /etc/nginx.orig /mnt/etc.nginx
+#     tee /mnt/etc.nginx/sites-available/default	<<EOF	> /dev/null
+# server {
+# 	listen 80 default_server;
+# 	listen [::]:80 default_server;
+# 	server_name _;
+# 	location / {
+# 		return 403;
+# 	}
+# }
+# EOF
+# fi
+# mkdir -p /etc/nginx
+
+# mount -a
 
 # systemctl restart nginx
 
