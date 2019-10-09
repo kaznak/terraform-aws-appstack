@@ -1,12 +1,5 @@
 # -*- Mode: HCL; -*-
 
-resource "random_string" "s3_randomsig" {
-  provider = random.r
-  length   = 8
-  upper    = false
-  special  = false
-}
-
 resource "aws_s3_bucket" "log" {
   bucket = "${local.default_name}-log-${random_string.s3_randomsig.result}"
   acl    = "log-delivery-write"

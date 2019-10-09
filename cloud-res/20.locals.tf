@@ -168,3 +168,10 @@ data "aws_route53_zone" "maintenance" {
   provider = aws.control
   name     = local.maintenance_domain
 }
+
+resource "random_string" "s3_randomsig" {
+  provider = random.r
+  length   = 8
+  upper    = false
+  special  = false
+}
