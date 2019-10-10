@@ -163,7 +163,7 @@ mkdir -p /mnt/www /var/www
 chown www-data:www-data  /mnt/www /var/www
 
 [ -d /var/nginx.orig ] || mv /etc/nginx{,.orig}
-if [ -d /mnt/etc.nginx ] ; then
+if [ ! -d /mnt/etc.nginx ] ; then
     cp -rp /etc/nginx.orig /mnt/etc.nginx
     tee /mnt/etc.nginx/sites-available/default	<<EOF	> /dev/null
 server {
@@ -176,7 +176,7 @@ server {
 }
 EOF
 fi
-mkdir -p /etc/nginx
+mkdir -p /mnt/etc.nginx /etc/nginx
 
 mount -a
 
