@@ -9,6 +9,7 @@ resource "aws_instance" "service-ami" {
     aws_network_acl_rule.private-i_g_tcpephemeral,
     aws_network_acl_rule.private-i_g_udpephemeral,
     aws_network_acl_rule.private-e_g_all,
+    aws_efs_mount_target.main,
   ]
 
   instance_type        = local.instances_service.instance_type
